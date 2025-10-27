@@ -93,6 +93,19 @@ form.addEventListener("submit", async (e) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
+import { getDoc, doc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const userDocRef = doc(db, "users", user.uid);
+const userSnap = await getDoc(userDocRef);
+
+if (!userSnap.exists()) {
+  console.error("User data not found");
+  alert("User data not found. Please sign up first.");
+  return;
+}
+
+const userData = userSnap.data();
+console.log("User data:", userData);
 
     // Optionally fetch Firestore user doc
     const userSnap = await getDoc(doc(db,"users",user.uid));
