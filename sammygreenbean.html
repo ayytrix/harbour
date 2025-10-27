@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <title>Harbour News Network — Create Article</title>
 <meta name="viewport" content="width=device-width,initial-scale=1" />
-<link rel="icon" href="https://raw.githubusercontent.com/ayytrix/ventest1/refs/heads/main/venux.png">
+<link rel="icon" href="https://raw.githubusercontent.com/ayytrix/harbour/refs/heads/main/ChatGPT%20Image%20Oct%2027%2C%202025%2C%2011_00_04%20AM.png">
 <style>
   :root{--bg:#f3f3f3;--card:#fff;--accent:#ff8c00;--muted:#666}
   body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);color:#111}
@@ -37,7 +37,7 @@
 
 <header>
   <div style="display:flex;align-items:center;gap:12px">
-    <img src="https://raw.githubusercontent.com/ayytrix/ventest1/refs/heads/main/venux.png" alt="HNN" />
+    <img src="https://raw.githubusercontent.com/ayytrix/harbour/refs/heads/main/ChatGPT%20Image%20Oct%2027%2C%202025%2C%2011_00_04%20AM.png" alt="HNN" />
     <div class="brand">Harbour News Network — Article Creator</div>
   </div>
   <nav style="font-size:14px;color:rgba(255,255,255,0.9)">
@@ -117,28 +117,25 @@
   Harbour News Network — test environment. Articles created here are for display only.
 </footer>
 
-<!-- Firebase SDKs -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
   import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
   import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
-  // <<< your firebase config (same as your other pages) >>>
   const firebaseConfig = {
-    apiKey: "AIzaSyBPmJ-QYXZ41gx-4PjCpUPuw7DLnDq0JFg",
-    authDomain: "venux1.firebaseapp.com",
-    projectId: "venux1",
-    storageBucket: "venux1.appspot.com",
-    messagingSenderId: "231055963335",
-    appId: "1:231055963335:web:34c2f52fca2191b3d0bae2",
-    measurementId: "G-N36RRV95SW"
+    apiKey: "AIzaSyAGtMifXSvavxsk8VLBsJAbrYJxOFs2oes",
+    authDomain: "harbour-45dca.firebaseapp.com",
+    projectId: "harbour-45dca",
+    storageBucket: "harbour-45dca.firebasestorage.app",
+    messagingSenderId: "109842774901",
+    appId: "1:109842774901:web:0679722f1614ce82bd713c",
+    measurementId: "G-5JBGJFKWM1"
   };
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  // elements
   const noticeEl = document.getElementById("notice");
   const signedInAs = document.getElementById("signedInAs");
   const previewBtn = document.getElementById("previewBtn");
@@ -153,7 +150,6 @@
   const previewTags = document.getElementById("previewTags");
   const formMsg = document.getElementById("formMsg");
 
-  // inputs
   const titleInput = document.getElementById("title");
   const subtitleInput = document.getElementById("subtitle");
   const imageInput = document.getElementById("image");
@@ -162,22 +158,17 @@
   const visibilityInput = document.getElementById("visibility");
 
   let currentUser = null;
-  let currentUserNumericId = 0;
-  let currentUsername = "Unknown";
 
-  // load dynamic notice (same pattern you used elsewhere)
   fetch("https://raw.githubusercontent.com/ayytrix/ventest1/refs/heads/main/anc")
     .then(r => r.ok ? r.text() : "Harbour News Network")
     .then(t => noticeEl.textContent = t)
     .catch(()=> noticeEl.textContent = "Harbour News Network");
 
-  // helper: show error
   function showError(text){
     errorMsg.style.display = text ? "block" : "none";
     errorMsg.textContent = text || "";
   }
 
-  // preview logic
   previewBtn.addEventListener("click", (e) => {
     e.preventDefault();
     const title = titleInput.value.trim();
@@ -190,13 +181,12 @@
     previewHero.style.backgroundImage = image ? `url('${image}')` : "none";
     previewTitle.textContent = title;
     previewSubtitle.textContent = subtitle;
-    previewBody.innerHTML = body; // NOTE: allowing basic HTML — sanitize server-side if needed
+    previewBody.innerHTML = body;
     previewTags.innerHTML = tags.length ? "Tags: " + tags.map(t => `<span style="display:inline-block;margin-right:6px;padding:4px 8px;border-radius:4px;background:#eee">${t}</span>`).join("") : "";
     previewArea.style.display = "block";
     window.scrollTo({ top: previewArea.offsetTop - 20, behavior: 'smooth' });
   });
 
-  // publish handler
   form.addEventListener("submit", async (ev) => {
     ev.preventDefault();
     showError("");
@@ -206,48 +196,30 @@
 
     try {
       if(!currentUser) throw new Error("You must be signed in.");
-      // server-side must enforce admin checks in rules; client checks here to be friendly
-      const userDocRef = doc(db, "users", currentUser.uid);
-      const userSnap = await getDoc(userDocRef);
+      const userSnap = await getDoc(doc(db, "users", currentUser.uid));
       if(!userSnap.exists()) throw new Error("Your user record is missing.");
       const userData = userSnap.data();
       const userNumericId = userData.userId || 0;
-      if (![1,2,5].includes(userNumericId)) {
-        throw new Error("Insufficient permissions — admin only.");
-      }
-
-      // collect fields
-      const title = titleInput.value.trim();
-      const subtitle = subtitleInput.value.trim();
-      const image = imageInput.value.trim() || null;
-      const body = contentInput.value.trim();
-      const tags = tagsInput.value.split(",").map(s=>s.trim()).filter(Boolean);
-      const visibility = visibilityInput.value || "public";
-
-      if(!title || !body) throw new Error("Title and body required.");
+      if (![1,2,5].includes(userNumericId)) throw new Error("Insufficient permissions — admin only.");
 
       const docRef = await addDoc(collection(db, "harbour_articles"), {
-        title,
-        subtitle: subtitle || "",
-        image: image || null,
-        body,
-        tags,
-        visibility,
+        title: titleInput.value.trim(),
+        subtitle: subtitleInput.value.trim() || "",
+        image: imageInput.value.trim() || null,
+        body: contentInput.value.trim(),
+        tags: tagsInput.value.split(",").map(s=>s.trim()).filter(Boolean),
+        visibility: visibilityInput.value || "public",
         authorUid: currentUser.uid,
         authorName: userData.username || currentUser.email || "Unknown",
-        authorUserId: userData.userId || null,
+        authorUserId: userNumericId,
         pinned: false,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
 
       formMsg.textContent = "Published! Redirecting...";
-      // small delay so admin sees the message, then go to harbour
-      setTimeout(() => {
-        window.location.href = "/harbour.html";
-      }, 900);
-
-    } catch (err) {
+      setTimeout(() => window.location.href = "/harbour.html", 900);
+    } catch(err){
       console.error(err);
       showError(err.message || "Publish failed.");
       publishBtn.disabled = false;
@@ -255,7 +227,6 @@
     }
   });
 
-  // auth observer: require login and get numeric id
   onAuthStateChanged(auth, async (user) => {
     currentUser = user;
     if(!user){
@@ -264,32 +235,23 @@
       return;
     }
 
-    // read users collection to obtain numeric userId + username
     try {
-      const userDocRef = doc(db, "users", user.uid);
-      const uSnap = await getDoc(userDocRef);
+      const uSnap = await getDoc(doc(db, "users", user.uid));
       if(uSnap.exists()){
         const d = uSnap.data();
-        currentUserNumericId = d.userId || 0;
-        currentUsername = d.username || user.email || "User";
+        signedInAs.innerHTML = `Signed in as <strong>${d.username || user.email}</strong> (id: ${d.userId || 0})`;
+        if (![1,2,5].includes(d.userId || 0)){
+          publishBtn.disabled = true;
+          formMsg.textContent = "You are not an admin. Only admins can publish.";
+        }
       } else {
-        currentUserNumericId = 0;
-        currentUsername = user.email || "User";
-      }
-      signedInAs.innerHTML = `Signed in as <strong>${currentUsername}</strong> (id: ${currentUserNumericId})`;
-      // quick friendly admin notice
-      if (![1,2,5].includes(currentUserNumericId)) {
-        // not admin — hide publish button but still allow preview
+        signedInAs.textContent = "Error: user data not found";
         publishBtn.disabled = true;
-        publishBtn.title = "Admins only";
-        formMsg.textContent = "You are not an admin. Only admins can publish.";
-      } else {
-        publishBtn.disabled = false;
-        formMsg.textContent = "";
       }
     } catch(e){
       console.error(e);
       signedInAs.textContent = "Error loading account info";
+      publishBtn.disabled = true;
     }
   });
 </script>
