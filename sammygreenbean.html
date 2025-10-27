@@ -1,259 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<title>Harbour News Network — Create Article</title>
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8">
+<title>Harbour News Network</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="https://raw.githubusercontent.com/ayytrix/harbour/refs/heads/main/ChatGPT%20Image%20Oct%2027%2C%202025%2C%2011_00_04%20AM.png">
 <style>
-  :root{--bg:#f3f3f3;--card:#fff;--accent:#ff8c00;--muted:#666}
-  body{margin:0;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#fff 0%,#f3f3f3 100%);color:#111}
-  header{background:linear-gradient(90deg,#2b3e6b,#163052);color:#fff;padding:14px 20px;display:flex;align-items:center;justify-content:space-between}
+  body{margin:0;font-family:Arial,sans-serif;background:#f3f3f3;color:#222}
+  header{background:linear-gradient(90deg,#2b3e6b,#163052);padding:12px 20px;color:#fff;display:flex;align-items:center;justify-content:space-between}
   header img{height:44px}
-  .brand{font-weight:700;font-size:18px;letter-spacing:.3px}
+  header .brand{font-weight:700;font-size:18px}
+  nav a{color:#fff;text-decoration:none;margin-left:15px;font-weight:600}
+  nav a:hover{text-decoration:underline}
+  #notice{background:linear-gradient(90deg,#ff8c00,#cc7a00);color:#fff;padding:10px 16px;font-weight:700;text-align:center}
   main{max-width:980px;margin:28px auto;padding:0 16px}
-  .notice{background:linear-gradient(0deg,var(--accent),#cc7a00);color:#210700;padding:10px 14px;border-radius:6px;margin-bottom:18px;font-weight:700}
-  .card{background:var(--card);border:1px solid #e1e1e1;border-radius:8px;padding:16px;box-shadow:0 6px 18px rgba(10,10,10,0.04)}
-  .row{display:flex;gap:12px;flex-wrap:wrap}
-  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
-  input[type=text],input[type=url],textarea,select{width:100%;padding:10px;border:1px solid #d0d0d0;border-radius:6px;font-size:14px;box-sizing:border-box}
-  textarea{min-height:160px;resize:vertical}
-  .col-2{flex:1 1 48%}
-  .actions{display:flex;gap:10px;align-items:center;margin-top:12px}
-  .btn{padding:10px 14px;border-radius:8px;border:0;font-weight:700;cursor:pointer}
-  .btn.primary{background:var(--accent);color:#fff}
-  .btn.ghost{background:#fff;border:1px solid #ccc}
-  .meta{font-size:13px;color:var(--muted);margin-top:8px}
-  .preview{margin-top:16px}
-  .preview .hero{width:100%;height:220px;background:#eee;border-radius:8px;background-size:cover;background-position:center}
-  .preview h3{margin:10px 0 4px}
-  .error{color:#b00020;font-weight:700;margin-top:8px}
-  .hint{font-size:12px;color:#777}
-  footer{max-width:980px;margin:28px auto;padding:16px;color:#666;font-size:13px}
-  @media (max-width:700px){ .col-2{flex-basis:100%} }
+  .article-card{background:#fff;border:1px solid #e1e1e1;border-radius:8px;padding:16px;margin-bottom:20px;box-shadow:0 4px 12px rgba(0,0,0,0.05)}
+  .article-card img{max-width:100%;border-radius:6px;margin-bottom:10px}
+  .article-card h2{margin:0;font-size:20px;color:#1a4a84}
+  .article-card h4{margin:4px 0;color:#555;font-weight:normal}
+  .article-card .tags{font-size:12px;color:#888;margin-top:8px}
+  footer{text-align:center;font-size:13px;color:#666;padding:16px;border-top:1px solid #ccc;margin-top:40px}
 </style>
 </head>
 <body>
 
 <header>
   <div style="display:flex;align-items:center;gap:12px">
-    <img src="https://raw.githubusercontent.com/ayytrix/harbour/refs/heads/main/ChatGPT%20Image%20Oct%2027%2C%202025%2C%2011_00_04%20AM.png" alt="HNN" />
-    <div class="brand">Harbour News Network — Article Creator</div>
+    <img src="https://raw.githubusercontent.com/ayytrix/harbour/refs/heads/main/ChatGPT%20Image%20Oct%2027%2C%202025%2C%2011_00_04%20AM.png" alt="HNN Logo">
+    <div class="brand">Harbour News Network</div>
   </div>
-  <nav style="font-size:14px;color:rgba(255,255,255,0.9)">
-    <a href="/harbour.html" style="color:inherit;text-decoration:none;margin-right:12px">Harbour Home</a>
-    <a href="/admin" style="color:inherit;text-decoration:none">Admin</a>
+  <nav>
+    <a href="harbour.html">Home</a>
+    <a href="CreateArticle.html">Create Article</a>
+    <a href="login.html">Login</a>
+    <a href="signup.html">Sign Up</a>
   </nav>
 </header>
 
-<main>
-  <div id="notice" class="notice">Loading...</div>
+<div id="notice">Loading latest articles...</div>
 
-  <div class="card">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2 style="margin:0">Create fake article</h2>
-      <div class="meta" id="signedInAs">Checking auth...</div>
-    </div>
-
-    <p class="hint">Only administrators can publish. This creates a record in <code>harbour_articles</code>.</p>
-
-    <form id="articleForm">
-      <div class="row" style="margin-top:12px">
-        <div class="col-2">
-          <label for="title">Title</label>
-          <input id="title" type="text" maxlength="200" required />
-        </div>
-
-        <div class="col-2">
-          <label for="subtitle">Subtitle / short summary</label>
-          <input id="subtitle" type="text" maxlength="220" />
-        </div>
-
-        <div style="flex-basis:100%;margin-top:8px">
-          <label for="image">Image URL (optional)</label>
-          <input id="image" type="url" placeholder="https://..." />
-        </div>
-
-        <div style="flex-basis:100%;margin-top:8px">
-          <label for="content">Article body (HTML allowed)</label>
-          <textarea id="content" placeholder="Write the article body..." required></textarea>
-        </div>
-
-        <div class="col-2">
-          <label for="tags">Tags (comma separated)</label>
-          <input id="tags" type="text" placeholder="politics,local,opinion" />
-        </div>
-
-        <div class="col-2">
-          <label for="visibility">Visibility</label>
-          <select id="visibility">
-            <option value="public">Public</option>
-            <option value="draft">Draft (hidden)</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="actions">
-        <button type="button" id="previewBtn" class="btn ghost">Preview</button>
-        <button type="submit" id="publishBtn" class="btn primary">Publish Article</button>
-        <div id="formMsg" style="margin-left:8px"></div>
-      </div>
-
-      <div id="errorMsg" class="error" role="alert" style="display:none"></div>
-    </form>
-
-    <div class="preview" id="previewArea" style="display:none">
-      <div class="hero" id="previewHero"></div>
-      <h3 id="previewTitle"></h3>
-      <div id="previewSubtitle" class="meta"></div>
-      <div id="previewBody" style="margin-top:10px;color:#222;background:#fff;padding:12px;border-radius:6px"></div>
-      <div style="margin-top:10px" id="previewTags"></div>
-    </div>
-
-  </div>
+<main id="articlesContainer">
+  <!-- Articles will be loaded here -->
 </main>
 
-<footer>
-  Harbour News Network — test environment. Articles created here are for display only.
-</footer>
+<footer>© 2025 Harbour News Network — All fake news, all the time.</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-  import { getFirestore, collection, addDoc, doc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+  import { getFirestore, collection, getDocs, query, where, orderBy } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 
   const firebaseConfig = {
-    apiKey: "AIzaSyAGtMifXSvavxsk8VLBsJAbrYJxOFs2oes",
-    authDomain: "harbour-45dca.firebaseapp.com",
-    projectId: "harbour-45dca",
-    storageBucket: "harbour-45dca.firebasestorage.app",
-    messagingSenderId: "109842774901",
-    appId: "1:109842774901:web:0679722f1614ce82bd713c",
-    measurementId: "G-5JBGJFKWM1"
+    apiKey: "AIzaSyBPmJ-QYXZ41gx-4PjCpUPuw7DLnDq0JFg",
+    authDomain: "venux1.firebaseapp.com",
+    projectId: "venux1",
+    storageBucket: "venux1.appspot.com",
+    messagingSenderId: "231055963335",
+    appId: "1:231055963335:web:34c2f52fca2191b3d0bae2",
+    measurementId: "G-N36RRV95SW"
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
   const db = getFirestore(app);
 
+  const articlesContainer = document.getElementById("articlesContainer");
   const noticeEl = document.getElementById("notice");
-  const signedInAs = document.getElementById("signedInAs");
-  const previewBtn = document.getElementById("previewBtn");
-  const publishBtn = document.getElementById("publishBtn");
-  const form = document.getElementById("articleForm");
-  const errorMsg = document.getElementById("errorMsg");
-  const previewArea = document.getElementById("previewArea");
-  const previewHero = document.getElementById("previewHero");
-  const previewTitle = document.getElementById("previewTitle");
-  const previewSubtitle = document.getElementById("previewSubtitle");
-  const previewBody = document.getElementById("previewBody");
-  const previewTags = document.getElementById("previewTags");
-  const formMsg = document.getElementById("formMsg");
 
-  const titleInput = document.getElementById("title");
-  const subtitleInput = document.getElementById("subtitle");
-  const imageInput = document.getElementById("image");
-  const contentInput = document.getElementById("content");
-  const tagsInput = document.getElementById("tags");
-  const visibilityInput = document.getElementById("visibility");
-
-  let currentUser = null;
-
-  fetch("https://raw.githubusercontent.com/ayytrix/ventest1/refs/heads/main/anc")
-    .then(r => r.ok ? r.text() : "Harbour News Network")
-    .then(t => noticeEl.textContent = t)
-    .catch(()=> noticeEl.textContent = "Harbour News Network");
-
-  function showError(text){
-    errorMsg.style.display = text ? "block" : "none";
-    errorMsg.textContent = text || "";
-  }
-
-  previewBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    const title = titleInput.value.trim();
-    const subtitle = subtitleInput.value.trim();
-    const image = imageInput.value.trim();
-    const body = contentInput.value.trim();
-    const tags = tagsInput.value.split(",").map(s=>s.trim()).filter(Boolean);
-    if(!title || !body){ showError("Title and body are required for preview."); return; }
-    showError("");
-    previewHero.style.backgroundImage = image ? `url('${image}')` : "none";
-    previewTitle.textContent = title;
-    previewSubtitle.textContent = subtitle;
-    previewBody.innerHTML = body;
-    previewTags.innerHTML = tags.length ? "Tags: " + tags.map(t => `<span style="display:inline-block;margin-right:6px;padding:4px 8px;border-radius:4px;background:#eee">${t}</span>`).join("") : "";
-    previewArea.style.display = "block";
-    window.scrollTo({ top: previewArea.offsetTop - 20, behavior: 'smooth' });
-  });
-
-  form.addEventListener("submit", async (ev) => {
-    ev.preventDefault();
-    showError("");
-    formMsg.textContent = "";
-    publishBtn.disabled = true;
-    publishBtn.textContent = "Publishing...";
-
+  async function loadArticles() {
     try {
-      if(!currentUser) throw new Error("You must be signed in.");
-      const userSnap = await getDoc(doc(db, "users", currentUser.uid));
-      if(!userSnap.exists()) throw new Error("Your user record is missing.");
-      const userData = userSnap.data();
-      const userNumericId = userData.userId || 0;
-      if (![1,2,5].includes(userNumericId)) throw new Error("Insufficient permissions — admin only.");
+      const q = query(
+        collection(db, "harbour_articles"),
+        where("visibility", "==", "public"),
+        orderBy("createdAt", "desc")
+      );
+      const snapshot = await getDocs(q);
 
-      const docRef = await addDoc(collection(db, "harbour_articles"), {
-        title: titleInput.value.trim(),
-        subtitle: subtitleInput.value.trim() || "",
-        image: imageInput.value.trim() || null,
-        body: contentInput.value.trim(),
-        tags: tagsInput.value.split(",").map(s=>s.trim()).filter(Boolean),
-        visibility: visibilityInput.value || "public",
-        authorUid: currentUser.uid,
-        authorName: userData.username || currentUser.email || "Unknown",
-        authorUserId: userNumericId,
-        pinned: false,
-        createdAt: serverTimestamp(),
-        updatedAt: serverTimestamp()
+      if (snapshot.empty) {
+        noticeEl.textContent = "No articles yet.";
+        return;
+      }
+
+      noticeEl.textContent = "Latest articles:";
+      articlesContainer.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const data = docSnap.data();
+        const html = `
+          <div class="article-card">
+            ${data.image ? `<img src="${data.image}" alt="Article image">` : ""}
+            <h2>${data.title}</h2>
+            <h4>${data.subtitle || ""}</h4>
+            <div>${data.body}</div>
+            ${data.tags?.length ? `<div class="tags">Tags: ${data.tags.join(", ")}</div>` : ""}
+          </div>
+        `;
+        articlesContainer.innerHTML += html;
       });
 
-      formMsg.textContent = "Published! Redirecting...";
-      setTimeout(() => window.location.href = "/harbour.html", 900);
-    } catch(err){
+    } catch (err) {
       console.error(err);
-      showError(err.message || "Publish failed.");
-      publishBtn.disabled = false;
-      publishBtn.textContent = "Publish Article";
+      noticeEl.textContent = "Failed to load articles. Make sure Firestore rules allow read access.";
     }
-  });
+  }
 
-  onAuthStateChanged(auth, async (user) => {
-    currentUser = user;
-    if(!user){
-      signedInAs.textContent = "Not signed in — redirecting to login...";
-      setTimeout(()=> location.href = "/Login.html", 700);
-      return;
-    }
-
-    try {
-      const uSnap = await getDoc(doc(db, "users", user.uid));
-      if(uSnap.exists()){
-        const d = uSnap.data();
-        signedInAs.innerHTML = `Signed in as <strong>${d.username || user.email}</strong> (id: ${d.userId || 0})`;
-        if (![1,2,5].includes(d.userId || 0)){
-          publishBtn.disabled = true;
-          formMsg.textContent = "You are not an admin. Only admins can publish.";
-        }
-      } else {
-        signedInAs.textContent = "Error: user data not found";
-        publishBtn.disabled = true;
-      }
-    } catch(e){
-      console.error(e);
-      signedInAs.textContent = "Error loading account info";
-      publishBtn.disabled = true;
-    }
-  });
+  loadArticles();
 </script>
 
 </body>
