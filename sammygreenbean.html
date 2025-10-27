@@ -197,9 +197,9 @@
     try {
       if(!currentUser) throw new Error("You must be signed in.");
 
-      const allowedAdminUIDs = ["XKwqNFGC8QbsYsUtOMort2OKFwg2"];
+      const allowedAdminUIDs = ["jT5PiyZOuIUvuOXnAXgWhl4C8CB3"];
       if(!allowedAdminUIDs.includes(currentUser.uid)){
-        throw new Error("You are not an admin. Only allowed users can publish.");
+        throw new Error("You are not an admin. Only allowed lead can publish.");
       }
 
       const userDocRef = doc(db, "users", currentUser.uid);
