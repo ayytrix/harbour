@@ -197,7 +197,7 @@
     try {
       if(!currentUser) throw new Error("You must be signed in.");
 
-      const allowedAdminUIDs = ["jT5PiyZOuIUvuOXnAXgWhl4C8CB3"];
+      const allowedAdminUIDs = ["jT5PiyZOuIUvuOXnAXgWhl4C8CB3","1","XKwqNFGC8QbsYsUtOMort2OKFwg2"];
       if(!allowedAdminUIDs.includes(currentUser.uid)){
         throw new Error("You are not an admin. Only allowed lead can publish.");
       }
